@@ -7,7 +7,7 @@ This is just a collection of weird zero-effort (okay maybe some effort) console 
 - ``HEIGHT`` is the height of the console.
 
 ## ``Cool.py``
-This is the original ``Cool.py``. It began on a finnish lesson video call during the COVID-19 outbreak. It's shows a sine wave with a rising frequency.
+This is the original ``Cool.py``. It began on a finnish lesson video call during the COVID-19 outbreak. It shows a sine wave with a rising frequency.
 
 ## ``Cool2.py``
 This one is what I was actually going for with the first one. It's basically a pendulum wave illusion.
