@@ -18,5 +18,8 @@ This one is what I was actually going for with the first one. It's basically a p
 ## ``Cool4.py``
 This has very little to do with the other ones. I just thought it would be cool (pun intended) to see a generated terrain go by in the console. 
 
+## ``Cool5.py``
+A [boids algorithm](https://en.wikipedia.org/wiki/Boids)
+
 ## Possible future ideas:
-- Boids algorithm
+- (placeholder for when I get new ideas I don't want to forget)
