@@ -16,4 +16,7 @@ This one is what I was actually going for with the first one. It's basically a p
 ``Cool3.py`` is basically just a mandelbrot set visualization. The math parts are ripped off the internet. The only thing I did was make it convert it to ASCII.
 
 ## ``Cool4.py``
-This has very little to do with the other ones. I just thought it would be cool (pun intended) to see a generated terrain go by in the console.
+This has very little to do with the other ones. I just thought it would be cool (pun intended) to see a generated terrain go by in the console. 
+
+## Possible future ideas:
+- Boids algorithm
