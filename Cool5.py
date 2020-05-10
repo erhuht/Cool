@@ -1,16 +1,18 @@
 import random
 import time
 import numpy
+from math import sqrt
 
-WIDTH = 90
+# This thing turned out very spaghetti-y :(
+
+WIDTH = 150
 HEIGHT = 50
 
 
-directions = [(x, y) for x in range(-1, 2) for y in range(-1, 2)] # [(1, 0), (1, 1), (0, 1), (-1, 1) ...]
-directions.remove((0,0))
+directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
 class Boid():
-    def __init__(self, x, y, see_range=5):
+    def __init__(self, x, y, see_range=20):
         self.x = x
         self.y = y
         self.direction = random.choice(directions)
@@ -23,33 +25,122 @@ class Boid():
         self.see()
     
     def see(self):
-        # Has to be made so, that it sees in every direction. Major changes are necessary
+        possible_directions = {}
+        chosen_directions = []
 
-        possible_directions = []
-        for d in directions:
+        index1 = (directions.index(self.direction)-2) % len(directions)
+        index2 = (directions.index(self.direction)+3) % len(directions)
+
+        if index1 > index2:
+            n_directions = directions[index1:-1] + [directions[-1]] + directions[0:index2] # There's probably a better way of doing this
+        else:
+            n_directions = directions[index1:index2]
+        
+        # Avoids collisions with walls. This gets priority, because otherwise it would crash
+        for d in n_directions:
             x = self.x
             y = self.y
-            possible = True
-            for _ in range(self.see_range):
+            for i in range(self.see_range):
                 x += d[0]
                 y += d[1]
 
-                if x <= 0 or x >= WIDTH or y <= 0 or y >= HEIGHT:
-                    possible = False
-                
-                for boid in boids:
-                    if boid.x == x and boid.y == y:
-                        possible = False
-                
-                if not possible:
+                if x > 0 and x < WIDTH and y > 0 and y < HEIGHT:
+                    possible_directions[d] = i
+                else:
                     break
-            if possible:
-                possible_directions.append(d)
+        try:
+            max_value = max(possible_directions.values())
+        except ValueError: # It has to do a 180 degree turn, shouldn't happen
+            for d in directions:
+                x = self.x
+                y = self.y
+                for i in range(self.see_range):
+                    x += d[0]
+                    y += d[1]
+
+                    if x >= 0 and x <= WIDTH and y >= 0 and y <= HEIGHT:
+                        possible_directions[d] = i
+                    else:
+                        break
+            max_value = max(possible_directions.values())
+
+        for key in possible_directions.keys():
+            if possible_directions[key] == max_value:
+                chosen_directions.append(key)
+        
+        if not self.direction in chosen_directions:
+            # Looks for the best chosen direction
+            for i in range(len(directions)*2):
+                i = i * ((i % 2)*2-1) // 2 # Goes through like so: 0; 0; -1; 1; -2; 2; -3 and so on
+                if directions[(directions.index(self.direction)+i) % len(directions)] in chosen_directions:
+                    self.direction = directions[(directions.index(self.direction)+i) % len(directions)]
+                    break
+        else:
+            # Here we can do the separation, cohesion and allignment
+            # http://www.vergenet.net/~conrad/boids/pseudocode.html
+
+            nearby_boids = []
+            center = [0,0]
+
+            vector = [0,0]
+
+            for boid in boids:
+                if boid != self:
+                    if sqrt((boid.x-self.x)**2+(boid.y-self.y)**2) < self.see_range:
+                        nearby_boids.append(boid)
+
+            # Cohesion
+            if len(nearby_boids) > 0:
+                for nearby_boid in nearby_boids:
+                    center[0] += nearby_boid.x
+                    center[1] += nearby_boid.y
+                
+                center[0] /= len(nearby_boids)
+                center[1] /= len(nearby_boids)
+                center = tuple(center)
+
+                vector[0] += center[0] / 100
+                vector[1] += center[1] / 100
+            
+
+            # Separation
+            
+            s = [0,0]
+
+            for nearby_boid in nearby_boids:
+                if sqrt((nearby_boid.x-self.x)**2+(nearby_boid.y-self.y)**2) < (self.see_range//2):
+                    s[0] += self.x - nearby_boid.x
+                    s[1] += self.y - nearby_boid.y
+
+            vector[0] += s[0]
+            vector[1] += s[1]
+            
+            # Alignment placeholder
 
 
-        if not self.direction in possible_directions:
-            self.direction = random.choice(possible_directions)
-                    
+            # Combine the rules
+            vector = tuple(vector)
+            
+            e_directions = n_directions.copy()
+            for i in range(len(e_directions)):
+                e_directions[i] = abs(vector[0]-e_directions[i][0] + vector[1]-e_directions[i][1])
+            
+
+            chosen_directions = []
+            min_value= min(e_directions)
+            for i in range(len(e_directions)):
+                if e_directions[i] == min_value:
+                    chosen_directions.append(n_directions[i])
+
+            if not self.direction in chosen_directions:
+                # Looks for the best chosen direction
+                for i in range(len(directions)*2):
+                    i = i * ((i % 2)*2-1) // 2 # Goes through like so: 0; 0; -1; 1; -2; 2; -3 and so on
+                    if directions[(directions.index(self.direction)+i) % len(directions)] in chosen_directions:
+                        self.direction = directions[(directions.index(self.direction)+i) % len(directions)]
+                        break
+
+
                 
                 
                 
@@ -60,17 +151,17 @@ for _ in range(5):
     boids.append(Boid(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
 
 
-pre_format = numpy.empty((HEIGHT, WIDTH), str)
+pre_format = numpy.empty((HEIGHT+3, WIDTH+3), str)
 formatted = """"""
 
 while True:
     print("\n"*2*HEIGHT)
 
-    pre_format = numpy.empty((HEIGHT, WIDTH), str)
+    pre_format = numpy.empty((HEIGHT+3, WIDTH+3), str)
     formatted = """"""
     for boid in boids:
         pre_format[boid.y][boid.x] = "#"
-        pre_format[boid.y-boid.direction[1]][boid.x-boid.direction[0]] = "#"
+        pre_format[boid.y-boid.direction[1]][boid.x-boid.direction[0]] = "+"
         boid.update()
 
     for y in pre_format:
@@ -78,6 +169,8 @@ while True:
             for x in y:
                 if x == "":
                     formatted += " "
+                elif x == "+":
+                    formatted += "+"
                 else:
                     formatted += "#"
             formatted += "\n"
