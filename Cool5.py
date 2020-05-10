@@ -5,9 +5,9 @@ from math import sqrt
 
 # This thing turned out very spaghetti-y :(
 
-WIDTH = 150
-HEIGHT = 50
-
+WIDTH = 197
+HEIGHT = 52
+TAILS = False
 
 directions = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
@@ -28,8 +28,8 @@ class Boid():
         possible_directions = {}
         chosen_directions = []
 
-        index1 = (directions.index(self.direction)-2) % len(directions)
-        index2 = (directions.index(self.direction)+3) % len(directions)
+        index1 = (directions.index(self.direction)-1) % len(directions)
+        index2 = (directions.index(self.direction)+2) % len(directions)
 
         if index1 > index2:
             n_directions = directions[index1:-1] + [directions[-1]] + directions[0:index2] # There's probably a better way of doing this
@@ -99,23 +99,32 @@ class Boid():
                 center[1] /= len(nearby_boids)
                 center = tuple(center)
 
-                vector[0] += center[0] / 100
-                vector[1] += center[1] / 100
+                vector[0] += center[0] / 10
+                vector[1] += center[1] / 10
             
 
             # Separation
-            
             s = [0,0]
 
             for nearby_boid in nearby_boids:
-                if sqrt((nearby_boid.x-self.x)**2+(nearby_boid.y-self.y)**2) < (self.see_range//2):
+                if sqrt((nearby_boid.x-self.x)**2+(nearby_boid.y-self.y)**2) < (self.see_range/4):
                     s[0] += self.x - nearby_boid.x
                     s[1] += self.y - nearby_boid.y
 
-            vector[0] += s[0]
-            vector[1] += s[1]
+            vector[0] += s[0] * 10
+            vector[1] += s[1] * 10
             
-            # Alignment placeholder
+            # Alignment
+            if len(nearby_boids) > 0:
+                nearby_direction = [0, 0]
+                for nearby_boid in nearby_boids:
+                    nearby_direction[0] += nearby_boid.direction[0]
+                    nearby_direction[1] += nearby_boid.direction[1]
+                nearby_direction[0] /= len(nearby_boids)
+                nearby_direction[1] /= len(nearby_boids)
+
+                vector[0] += nearby_direction[0]
+                vector[1] += nearby_direction[0]
 
 
             # Combine the rules
@@ -147,7 +156,7 @@ class Boid():
 
 
 boids = []
-for _ in range(5):
+for _ in range(20):
     boids.append(Boid(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
 
 
@@ -161,7 +170,8 @@ while True:
     formatted = """"""
     for boid in boids:
         pre_format[boid.y][boid.x] = "#"
-        pre_format[boid.y-boid.direction[1]][boid.x-boid.direction[0]] = "+"
+        if TAILS:
+            pre_format[boid.y-boid.direction[1]][boid.x-boid.direction[0]] = "+"
         boid.update()
 
     for y in pre_format:
@@ -179,4 +189,4 @@ while True:
 
     print(formatted)
 
-    time.sleep(0.1)
+    time.sleep(0.05)

@@ -19,7 +19,7 @@ This one is what I was actually going for with the first one. It's basically a p
 This has very little to do with the other ones. I just thought it would be cool (pun intended) to see a generated terrain go by in the console. 
 
 ## ``Cool5.py``
-A [boids algorithm](https://en.wikipedia.org/wiki/Boids)
+A really twitchy (probably just because the resolution is so low) [boids algorithm](https://en.wikipedia.org/wiki/Boids). The code is bad and I'm still not sure whether it works or just happens to look like it's working.
 
 ## Possible future ideas:
 - (placeholder for when I get new ideas I don't want to forget)
