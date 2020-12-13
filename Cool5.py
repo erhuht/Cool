@@ -2,11 +2,15 @@ import random
 import time
 import numpy
 from math import sqrt
+from ctypes import windll
+
+timeBeginPeriod = windll.winmm.timeBeginPeriod
+timeBeginPeriod(1) #Time resolution to 1 ms
 
 # This thing turned out very spaghetti-y :(
 
 WIDTH = 95
-HEIGHT = 45 # Half the actual width
+HEIGHT = 45
 TAILS = False
 BOIDS = 20
 
@@ -190,4 +194,4 @@ while True:
 
     print(formatted)
 
-    time.sleep(0.05)
+    time.sleep(0.01)

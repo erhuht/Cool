@@ -1,6 +1,10 @@
 import time
 import math
 import sys
+from ctypes import windll
+
+timeBeginPeriod = windll.winmm.timeBeginPeriod
+timeBeginPeriod(1) #Time resolution to 1 ms
 
 s = ""
 i = 0

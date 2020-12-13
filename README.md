@@ -21,5 +21,8 @@ This has very little to do with the other ones. I just thought it would be cool 
 ## ``Cool5.py``
 A really twitchy (probably just because the resolution is so low) [boids algorithm](https://en.wikipedia.org/wiki/Boids). The code is bad and I'm still not sure whether it works or just happens to look like it's working.
 
+## ``Cool6.py``
+A work-in-progress n-body simulation.
+
 ## Possible future ideas:
 - (placeholder for when I get new ideas I don't want to forget)
