@@ -10,15 +10,17 @@ points = []
 bezier = []
 
 def output(l, p=[]):
+    output_string = ""
     for y in range(HEIGHT, -1, -1):
         for x in range(WIDTH*2):
             if [x, y] in p:
-                print("@", end="")
+                s += "@"
             elif [x, y] in l:
-                print("#", end="")
+                s += "#"
             else:
-                print(" ", end="")
-        print("\n", end="")
+                s += " "
+        s += "\n"
+    print(s, end="")
 
 def animate_output(l, p=[]):
     for i in range(len(l)):
