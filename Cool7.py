@@ -14,13 +14,13 @@ def output(l, p=[]):
     for y in range(HEIGHT, -1, -1):
         for x in range(WIDTH*2):
             if [x, y] in p:
-                s += "@"
+                output_string += "@"
             elif [x, y] in l:
-                s += "#"
+                output_string += "#"
             else:
-                s += " "
-        s += "\n"
-    print(s, end="")
+                output_string += " "
+        output_string += "\n"
+    print(output_string, end="")
 
 def animate_output(l, p=[]):
     for i in range(len(l)):
@@ -65,4 +65,4 @@ for t in range(RESOLUTION):
     
     bezier.append([round(work_points[0][0]), round(work_points[0][1])])
 
-output(bezier, points)
+animate_output(bezier, points)
